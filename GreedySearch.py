@@ -24,12 +24,7 @@ def greedy(start, goal, map, heuristic):
 
     return [], visit_count
 
-path, expansions = greedy(
-    "Arad",
-    "Bucharest",
-    map,
-    heuristic2
-)
+# path, expansions = greedy("Arad", "Bucharest", map, heuristic)
 
-print("Greedy path:", path)
-print("Nodes expanded:", expansions)
+# print("Greedy path:", path)
+# print("Nodes expanded:", expansions)

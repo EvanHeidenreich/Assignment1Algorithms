@@ -28,7 +28,7 @@ def dfs(start, goal, map, max_revisits=None):
                     
     return [], expansions
 
-path, expansions = dfs("Arad", "Bucharest", map, max_revisits=4)
+# path, expansions = dfs("Arad", "Bucharest", map, max_revisits=4)
 
-print("Path found:", path)
-print("Number of expansions:", expansions)
+# print("Path found:", path)
+# print("Number of expansions:", expansions)

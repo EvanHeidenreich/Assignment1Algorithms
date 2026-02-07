@@ -24,7 +24,7 @@ def bfs(start, goal, map):
 
     return [], expansions
 
-path, expansions = bfs("Arad", "Bucharest", map)
+# path, expansions = bfs("Arad", "Bucharest", map)
 
-print("Path found:", path)
-print("Number of expansions:", expansions)
+# print("Path found:", path)
+# print("Number of expansions:", expansions)
