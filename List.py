@@ -23,6 +23,7 @@ map = {
     "Neamt": [("Iasi", 87)]
 }
 
+# Straight Line Distance Map
 sld_map = {
     'Arad': 366, 
     'Bucharest': 0,

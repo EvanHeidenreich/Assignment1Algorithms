@@ -20,7 +20,7 @@ def algorithms_100_runs_and_graphs(start, goal):
     astarh2_expan, astarh2_time_ms, astarh2_time_ns, astarh2_cost = [], [], [], None
     
     for _ in range(run):
-        # BFS
+        # BFS 100 runs tracking time(ms and ns), expansions, and cost
         start_ns = time.perf_counter_ns()
         path, cost, expansion = bfs(start, goal, map)
         end_ns = time.perf_counter_ns()
@@ -30,7 +30,7 @@ def algorithms_100_runs_and_graphs(start, goal):
         if bfs_cost is None:
             bfs_cost = cost
 
-        # DFS
+        # DFS 100 runs tracking time(ms and ns), expansions, and cost
         start_ns = time.perf_counter_ns()
         path, cost, expansion = dfs(start, goal, map, max_revisits=None)
         end_ns = time.perf_counter_ns()
@@ -40,7 +40,7 @@ def algorithms_100_runs_and_graphs(start, goal):
         if dfs_cost is None:
             dfs_cost = cost
 
-        # Greedy H1
+        # Greedy H1 100 runs tracking time(ms and ns), expansions, and cost
         start_ns = time.perf_counter_ns()
         path, cost, expansion = greedy(start, goal, map, heuristic)
         end_ns = time.perf_counter_ns()
@@ -50,7 +50,7 @@ def algorithms_100_runs_and_graphs(start, goal):
         if greedyh1_cost is None:
             greedyh1_cost = cost
 
-        # Greedy H2
+        # Greedy H2 100 runs tracking time(ms and ns), expansions, and cost
         start_ns = time.perf_counter_ns()
         path, cost, expansion = greedy(start, goal, map, heuristic2)
         end_ns = time.perf_counter_ns()
@@ -60,7 +60,7 @@ def algorithms_100_runs_and_graphs(start, goal):
         if greedyh2_cost is None:
             greedyh2_cost = cost
 
-        # A* H1
+        # A* H1 100 runs tracking time(ms and ns), expansions, and cost
         start_ns = time.perf_counter_ns()
         path, cost, expansion = Astar(start, goal, map, heuristic)
         end_ns = time.perf_counter_ns()
@@ -70,7 +70,7 @@ def algorithms_100_runs_and_graphs(start, goal):
         if astarh1_cost is None:
             astarh1_cost = cost
 
-        # A* H2
+        # A* H2 100 runs tracking time(ms and ns), expansions, and cost
         start_ns = time.perf_counter_ns()
         path, cost, expansion = Astar(start, goal, map, heuristic2)
         end_ns = time.perf_counter_ns()
@@ -88,47 +88,8 @@ def algorithms_100_runs_and_graphs(start, goal):
         "A*H1": (astarh1_expan, astarh1_time_ms, astarh1_time_ns, astarh1_cost),
         "A*H2": (astarh2_expan, astarh2_time_ms, astarh2_time_ns, astarh2_cost),
     }
-    #     # Breadth First Search
-    #     start_time = time.perf_counter()
-    #     _, cost, expansion = bfs(start, goal, map)
-    #     end_time = time.perf_counter()
-    #     bfs_expan.append(expansion)
-    #     bfs_time.append(end_time - start_time)
-    #     # Depth First Search
-    #     start_time = time.perf_counter()
-    #     _, cost, expansion = dfs(start, goal, map, max_revisits=None)
-    #     end_time = time.perf_counter()
-    #     dfs_expan.append(expansion)
-    #     dfs_time.append(end_time - start_time)
-    #     # Greedy Search Heuristic 1
-    #     start_time = time.perf_counter()
-    #     _, cost, expansion = greedy(start, goal, map, heuristic)
-    #     end_time = time.perf_counter()
-    #     greedyh1_expan.append(expansion)
-    #     greedyh1_time.append(end_time - start_time)
-    #     # Greedy Search Heuristic 2
-    #     start_time = time.perf_counter()
-    #     _, cost, expansion = greedy(start, goal, map, heuristic2)
-    #     end_time = time.perf_counter()
-    #     greedyh2_expan.append(expansion)
-    #     greedyh2_time.append(end_time - start_time)        
-    #     # A* Search Heuristic 1
-    #     start_time = time.perf_counter()
-    #     _, cost, expansion = Astar(start, goal, map, heuristic)
-    #     end_time = time.perf_counter()
-    #     astarh1_expan.append(expansion)
-    #     astarh1_time.append(end_time - start_time)
-    #     # A* Search Heuristic 2
-    #     start_time = time.perf_counter()
-    #     _, cost, expansion = Astar(start, goal, map, heuristic2)
-    #     end_time = time.perf_counter()
-    #     astarh2_expan.append(expansion)
-    #     astarh2_time.append(end_time - start_time)        
-        
-    # return (bfs_expan, bfs_time, dfs_expan, dfs_time, 
-    #         greedyh1_expan, greedyh1_time, greedyh2_expan, greedyh2_time,
-    #         astarh1_expan, astarh1_time, astarh2_expan, astarh2_time)
-    
+
+# Function to plot the graphs used in the report and for users viewing when running the performance test.
 def plot_graphs(expansions, time, name):
     fig, ax1 = plt.subplots()
 
@@ -140,7 +101,7 @@ def plot_graphs(expansions, time, name):
 
     ax2 = ax1.twinx()
     color = 'tab:red'
-    ax2.set_ylabel("Time (s)", color=color)
+    ax2.set_ylabel("Time (ns)", color=color)
     ax2.plot(range(1, len(time)+1), time, color=color, label='Time')
     ax2.tick_params(axis='y', labelcolor=color)
 
