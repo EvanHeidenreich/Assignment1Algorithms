@@ -25,7 +25,7 @@ def algorithms_100_runs_and_graphs(start, goal):
         bfs_time.append(end_time - start_time)
         # Depth First Search
         start_time = time.perf_counter()
-        _, expansion = dfs(start, goal, map, max_revisits=3)
+        _, expansion = dfs(start, goal, map, max_revisits=None)
         end_time = time.perf_counter()
         dfs_expan.append(expansion)
         dfs_time.append(end_time - start_time)
