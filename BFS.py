@@ -12,19 +12,14 @@ def bfs(start, goal, map):
         node = fringe.popleft()
         expansions += 1
 
-        for neighbor, _ in map[node.city]:
+        for neighbor, cost in map[node.city]:
             if neighbor == goal:
                 expansions += 1 
-                return node.path() + [goal], expansions
+                return node.path() + [goal], node.g + cost, expansions
 
             if neighbor not in visited:
                 visited.add(neighbor)
-                fringe.append(Nodes(neighbor, node))
+                fringe.append(Nodes(neighbor, node, node.g + cost))
 
 
-    return [], expansions
-
-# path, expansions = bfs("Arad", "Bucharest", map)
-
-# print("Path found:", path)
-# print("Number of expansions:", expansions)
+    return [], 0 ,expansions

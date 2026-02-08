@@ -4,31 +4,26 @@ from List import map
 
 def dfs(start, goal, map, max_revisits=None):
     fringe = deque([Nodes(start)])
-    visited = {start: 1}
+    visited = {start: 1}    
     expansions = 0
     
     while fringe:
-        node = fringe.popleft()
+        node = fringe.pop()
         expansions += 1
         
         if node.city == goal:
-            return node.path(), expansions
+            return node.path(), node.g, expansions
         
-        for neighbor, _ in reversed(map.get(node.city, [])):
+        for neighbor, cost in reversed(map.get(node.city, [])):
             visits = visited.get(neighbor, 0)
 
             if max_revisits is None:
                 if neighbor not in visited:
                     visited[neighbor] = 1
-                    fringe.appendleft(Nodes(neighbor, node))
+                    fringe.appendleft(Nodes(neighbor, node, node.g + cost))
             else:
                 if visits < max_revisits:
                     visited[neighbor] = visits + 1
-                    fringe.appendleft(Nodes(neighbor, node))
+                    fringe.appendleft(Nodes(neighbor, node, node.g + cost))
                     
-    return [], expansions
-
-# path, expansions = dfs("Arad", "Bucharest", map, max_revisits=4)
-
-# print("Path found:", path)
-# print("Number of expansions:", expansions)
+    return [], 0, expansions

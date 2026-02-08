@@ -4,6 +4,7 @@ from GreedySearch import greedy
 from AStar import Astar
 from PerformanceTest import algorithms_100_runs_and_graphs, plot_graphs
 from Heuristic import heuristic, heuristic2
+from Algorithms import Nodes
 import Algorithms
 from List import map, sld_map
 import numpy as np
@@ -27,20 +28,28 @@ def main():
                 bfs_start = input("Enter Starting City: ")
                 bfs_goal = input("Enter the Goal City: ")
                 
-                path, expansions = bfs(bfs_start, bfs_goal, map)
+                path, cost, expansions = bfs(bfs_start, bfs_goal, map)
                 
                 print("Path Found: ", path)
+                print("Cost:", cost)
                 print("Number of Expansions: ", expansions)
                 continue
             # Depth First Search
             case '2':
                 dfs_start = input("Enter Starting City: ")
                 dfs_goal = input("Enter the Goal City: ")
-                max_revisits = int(input("Enter maximum number of revisits: "))
+                max_revisits_input = input("Enter maximum number of revisits (leave blank for no limit): ")
+
+                # If the user presses Enter, use None
+                if max_revisits_input == "":
+                    max_revisits = None
+                else:
+                    max_revisits = int(max_revisits_input)
                 
-                path, expansions = dfs(dfs_start, dfs_goal, map, max_revisits=max_revisits)
+                path, cost, expansions = dfs(dfs_start, dfs_goal, map, max_revisits=max_revisits)
                 
                 print("Path found:", path)
+                print("Cost: ", cost)
                 print("Number of expansions:", expansions)
                 continue
             # Greedy First Search
@@ -57,9 +66,10 @@ def main():
                     print("Invalid Heuristic. ")
                     continue
                 
-                path, expansions = greedy(g_start, g_goal, map, h)
+                path, cost, expansions = greedy(g_start, g_goal, map, h)
                 
                 print("Greedy path:", path)
+                print("Cost: ", cost)
                 print("Nodes expanded:", expansions)
                 continue
             # A* Search
@@ -76,43 +86,35 @@ def main():
                     print("Invalid Heuristic. ")
                     continue
                 
-                path, expansions = Astar(a_start, a_goal, map, h)
+                path, cost, expansions = Astar(a_start, a_goal, map, h)
                 
                 print("Path found:", path)
+                print("Cost: ", cost)
                 print("Number of expansions:", expansions)
                 continue
             # Performance Test and Graphs
             case '5':
                 p_start = input("Enter the Performance Test Start City: ")
                 p_goal = input("Enter the Performance Test Goal City: ")
+                case_5_performance_test(p_start, p_goal)
+                results = algorithms_100_runs_and_graphs(p_start, p_goal)
                 
-                (bfs_expan, bfs_time, dfs_expan, dfs_time, 
-                greedyh1_expan, greedyh1_time, greedyh2_expan, greedyh2_time,
-                astarh1_expan, astarh1_time, astarh2_expan, astarh2_time)= algorithms_100_runs_and_graphs(p_start, p_goal)
-                
-                
-                plot_graphs(bfs_expan, bfs_time, "Breadth First Search Time Expansion")
-                plot_graphs(dfs_expan, dfs_time, "Depth First Search Time Expansion")
-                plot_graphs(greedyh1_expan, greedyh1_time, "Greedy First Search Heuristic 1 Time Expansion")
-                plot_graphs(greedyh2_expan, greedyh2_time, "Greedy First Search Heuristic 2 Time Expansion")
-                plot_graphs(astarh1_expan, astarh1_time, "A* Heuristic 1 Search Time Expansion")
-                plot_graphs(astarh2_expan, astarh2_time, "A* Heuristic 2 Search Time Expansion")
-                
+
                 # Bar Chart of Average Time
                 Test_time = ["BFS", "DFS", "GreedyH1", "GreedyH2", "A*H1", "A*H2"]
-                average_time = [np.mean(bfs_time), np.mean(dfs_time), np.mean(greedyh1_time), 
-                           np.mean(greedyh2_time), np.mean(astarh1_time), np.mean(astarh2_time)]
-                plt.bar(Test_time, average_time, color=['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple'])
-                plt.ylabel("Average Time (100 Runs)")
+                average_time_ns = [np.mean(results["BFS"][2]), np.mean(results["DFS"][2]), np.mean(results["GreedyH1"][2]), 
+                                   np.mean(results["GreedyH2"][2]), np.mean(results["A*H1"][2]), np.mean(results["A*H2"][2])]
+                plt.bar(Test_time, average_time_ns, color=['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple'])
+                plt.ylabel("Average Time (ns) over 100 Runs")
                 plt.xlabel("Algorithms")
-                plt.title("Algorithm Comparison: Time Average")
+                plt.title("Algorithm Comparison: Average Time in Nanoseconds")
                 plt.show()
                 
                 # Bar Chart of Average Node Expansion
                 Test = ["BFS", "DFS", "GreedyH1", "GreedyH2", "A*H1", "A*H2"]
-                average = [np.mean(bfs_expan), np.mean(dfs_expan), np.mean(greedyh1_expan), 
-                           np.mean(greedyh2_expan), np.mean(astarh1_expan), np.mean(astarh2_expan)]
-                plt.bar(Test, average, color=['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple'])
+                average_expansions = [np.mean(results["BFS"][0]), np.mean(results["DFS"][0]), np.mean(results["GreedyH1"][0]), 
+                                      np.mean(results["GreedyH2"][0]), np.mean(results["A*H1"][0]), np.mean(results["A*H2"][0])]
+                plt.bar(Test, average_expansions, color=['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple'])
                 plt.ylabel("Average Node Expansion (100 Runs)")
                 plt.xlabel("Algorithms")
                 plt.title("Algorithm Comparison: Node Expansion Average")
@@ -122,6 +124,20 @@ def main():
             case '6':
                 break
     
+def case_5_performance_test(p_start, p_goal):
+    results = algorithms_100_runs_and_graphs(p_start, p_goal)
+    
+    # Print cost (same for all runs)
+    print("\n--- Performance Test Results ---")
+    for alg_name in results:
+        expan, time_ms, time_ns, cost = results[alg_name]
+        print(f"\nAlgorithm: {alg_name}")
+        print(f"Cost: {cost}")
+        print(f"Average Nodes Expanded: {np.mean(expan):.2f}")
+        print(f"Average Time (ms): {np.mean(time_ms):.6f}")
+        print(f"Average Time (ns): {np.mean(time_ns):.2f}")
+
+        plot_graphs(expan, time_ns, f"{alg_name} Performance (ns)")
     
 if __name__ == "__main__":
     main()

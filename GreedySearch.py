@@ -3,28 +3,33 @@ from Heuristic import heuristic, heuristic2
 from collections import deque
 from Algorithms import Nodes
 from List import map
+from itertools import count
 
 def greedy(start, goal, map, heuristic):
+    """
+    Greedy Best-First Search using Nodes.g for cost
+    Returns: path, total_cost, expansions
+    """
     queue = []
-    heapq.heappush(queue, (heuristic(start, goal), start, [start]))
+    counter = count()  # tie-breaker for heapq
+    heapq.heappush(queue, (heuristic(start, goal), next(counter), Nodes(start, None, 0)))
     visited = set()
-    visit_count = 0
-    
+    expansions = 0
+
     while queue:
-        _, node, path = heapq.heappop(queue)
-        visited.add(node)
-        visit_count += 1
-        
-        if node == goal:
-            return path, visit_count
-        
-        for neighbor, _ in map.get(node, []):
+        _, _, current_node = heapq.heappop(queue)
+        expansions += 1
+        current_city = current_node.city
+
+        if current_city == goal:
+            return current_node.path(), current_node.g, expansions
+
+        visited.add(current_city)
+
+        for neighbor, cost in map.get(current_city, []):
             if neighbor not in visited:
-                heapq.heappush(queue, (heuristic(neighbor, goal), neighbor, path + [neighbor]))
+                child_node = Nodes(neighbor, current_node, current_node.g + cost)
+                # Push (heuristic, counter, node) to avoid comparing Nodes
+                heapq.heappush(queue, (heuristic(neighbor, goal), next(counter), child_node))
 
-    return [], visit_count
-
-# path, expansions = greedy("Arad", "Bucharest", map, heuristic)
-
-# print("Greedy path:", path)
-# print("Nodes expanded:", expansions)
+    return [], 0, expansions
